@@ -351,7 +351,7 @@
     };
     const traces = grp.members.map((mem, mi) => ({
       x: cx(f0), y: cy(f0, mi), type: 'scatter', mode: 'lines', name: mem.name,
-      line: {color: mem.color, width: ll ? 1.4 : 1}, fill: ll ? 'none' : 'tozeroy', fillcolor: mem.fill,
+      line: {color: mem.color, width: ll ? 1.4 : 1}, fill: 'tozeroy', fillcolor: mem.fill,
       hovertemplate: mem.name + '<br>\u03bb %{x:.4g}<br>\u03c1 %{y:.4g}<extra></extra>'
     }));
     const frames = steps.map((s, fi) => ({name: 'g' + fi,
