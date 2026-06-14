@@ -153,6 +153,7 @@
   const curModel = () => DATA.models[Number(modelSel.value || 0)];
   const tabDef = key => DATA.tabs.find(t => t.key === key);
   let activeTab = DATA.tabs[0].key;
+  try { const s = localStorage.getItem('sparsity-tab'); if (s && DATA.tabs.some(t => t.key === s)) activeTab = s; } catch (e) {}
 
   // tab buttons
   const tabsEl = document.getElementById('tabs');
@@ -177,6 +178,7 @@
 
   function setTab(key) {
     activeTab = key;
+    try { localStorage.setItem('sparsity-tab', key); } catch (e) {}
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.key === key));
     DATA.tabs.forEach(t => {
       const p = document.getElementById('panel-' + t.key);
@@ -434,6 +436,7 @@
     return true;
   }
   function setView(key) {
+    if (key) { try { localStorage.setItem('sparsity-view-' + activeTab, key); } catch (e) {} }
     ['hist-wrap', 'alpha-wrap', 'esd-wrap', 'htsr-wrap', 'spectra-wrap'].forEach(w => {
       const el = document.getElementById(w); if (el) el.style.display = 'none';
     });
@@ -457,7 +460,10 @@
     vs.innerHTML = '';
     avail.forEach(v => vs.add(new Option(v.label, v.key)));
     vs.onchange = () => setView(vs.value);
-    setView(avail.length ? avail[0].key : null);
+    let want = avail.length ? avail[0].key : null;
+    try { const sv = localStorage.getItem('sparsity-view-' + key); if (sv && avail.some(v => v.key === sv)) want = sv; } catch (e) {}
+    if (want) vs.value = want;
+    setView(want);
   }
 
   function renderTab(key) {
@@ -470,7 +476,8 @@
 
   function renderAll() { renderStats(); renderTab(activeTab); }
   modelSel.onchange = renderAll;
-  renderAll();
+  renderStats();
+  setTab(activeTab);
 
 </script>
 </body>
